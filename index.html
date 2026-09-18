@@ -1,20 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
-    <audio autoplay loop controls style="display: block; margin: 20px auto; opacity: 0">
-        <source src="nothing seen outside the closet.mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
-    </audio>
-      <script>
-        document.addEventListener('click', function() {
-            var audio = document.querySelector('audio');
-            if (audio) { audio.play(); }
-        }, { once: true });
-    </script>
 <head>
     <meta charset="UTF-8">
-    <title>seek.</title>
-    
-    <link href="https://googleapis.com" rel="stylesheet">
+    <title>Analog Horror Archive</title>
     
     <style>
         html {
@@ -25,7 +13,7 @@
         body {
             background-color: #000000;
             color: #ffffff;
-            font-family: 'VT323', monospace;
+            font-family: 'Courier New', Courier, monospace; 
             margin: 0;
             padding: 0;
             overflow-x: hidden;
@@ -42,29 +30,77 @@
             pointer-events: none;
         }
 
-        img, video {
-            image-rendering: pixelated;
-            image-rendering: crisp-edges;
-        }
-
-        .main-title {
-            font-size: 100px; 
+        .quote-text {
+            font-size: 50px; 
             text-align: center;
             text-transform: uppercase;
-            text-shadow: 2px 2px 0px #444444, -2px -2px 0px #AAAAAA;
+            text-shadow: 2px 2px 0px #444444, -2px -2px 0px #aaaaaa;
+        }
+
+        .shadow-zone {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 40px;
+            box-sizing: border-box;
         }
 
         .hidden-message {
-            color: #343434; 
-            text-align: left; 
-            font-size: 20px; 
+            color: #171717; 
+            text-align: center; 
+            font-size: 24px; 
             display: block;
-            padding: 20px;
+            margin-bottom: 60px;
+            text-transform: uppercase;
         }
-        
+
+   
+        .terminal-box {
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .terminal-input {
+            background-color: transparent;
+            border: none;
+            border-bottom: 3px solid #171717; /* Dim white/gray line to blend into the shadows */
+            color: #ff0000; /* Inputs print in blood-red text */
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 32px;
+            text-align: center;
+            outline: none;
+            text-transform: uppercase;
+            width: 100%;
+            letter-spacing: 2px;
+            transition: border-color 0.5s ease;
+        }
+
+        /* Optional: Light up the line bright white when the user clicks inside the input box */
+        .terminal-input:focus {
+            border-bottom-color: #ffffff;
+        }
+
+        .error-message {
+            color: #ff0000;
+            font-size: 20px;
+            margin-top: 20px;
+            min-height: 24px;
+            text-transform: uppercase;
+        }
     </style>
 </head>
 <body>
+
+    <audio id="bg-drone" autoplay loop style="display: none;">
+        <source src="nothing seen outside the closet.mp3" type="audio/mpeg">
+    </audio>
+
+    <audio id="bg-static" autoplay loop style="display: none;">
+        <source src="HummingTape.mp3" type="audio/mpeg">
+    </audio>
 
     <svg xmlns="http://w3.org" style="display: none;">
         <filter id="pixelate" x="0%" y="0%" width="100%" height="100%">
@@ -77,15 +113,112 @@
         </filter>
     </svg>
 
-    <div style="height: 20vh;"></div>
-
-    <div>
-        <p class="main-title">IS IT REALLY NEEDED?</p>
+    <div style="display: flex; align-items: center; justify-content: center; height: 100vh;">
+        <p class="quote-text">IS IT REALLY NEEDED?</p>
     </div>
 
-    <div style="height: 300vh;"></div>
+ 
+    <div style="height: 1000vh;"></div>
 
-    <span class="hidden-message">the mall with no way. the creature with no face. all in there. all nowhere.</span>
+
+    <div class="shadow-zone">
+        
+        <span class="hidden-message" id="scare-trigger">
+            the mall with no way. the creature with no face. all in there. all nowhere.
+        </span>
+
+        <div class="terminal-box">
+            <input type="text" id="command-line" class="terminal-input" placeholder="..." autocomplete="off">
+            <p id="error-output" class="error-message"></p>
+        </div>
+
+    </div>
+
+    <script>
+        const scareAudio = new Audio('scare-sound.mp3');
+        scareAudio.preload = "auto";
+        scareAudio.volume = 0.8;
+
+        const inputField = document.getElementById('command-line');
+        const errorOutput = document.getElementById('error-output');
+
+        function setupAudioLoops() {
+            const track1 = document.getElementById('bg-drone');
+            const track2 = document.getElementById('bg-static');
+            
+            const bindLoopReset = (element) => {
+                if (element) {
+                    element.loop = true;
+                    element.addEventListener('ended', function() {
+                        this.currentTime = 0;
+                        this.play();
+                    }, false);
+                }
+            };
+            bindLoopReset(track1);
+            bindLoopReset(track2);
+        }
+
+        window.onload = setupAudioLoops;
+
+        function startAllBackgroundAudio() {
+            const track1 = document.getElementById('bg-drone');
+            const track2 = document.getElementById('bg-static');
+            if (track1 && track1.paused) { track1.play(); }
+            if (track2 && track2.paused) { track2.play(); }
+        }
+        document.addEventListener('click', startAllBackgroundAudio, { once: true });
+        document.addEventListener('scroll', startAllBackgroundAudio, { once: true });
+
+        let hasPlayedScare = false;
+        const scareObserver = new IntersectionObserver(function(entries, observer) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !hasPlayedScare) {
+                    scareAudio.play().catch(err => {});
+                    hasPlayedScare = true;
+                    scareObserver.unobserve(entry.target);
+                }
+            });
+        }, { root: null, threshold: 0.1 });
+
+        const targetElement = document.getElementById('scare-trigger');
+        if (targetElement) { scareObserver.observe(targetElement); }
+
+        inputField.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                const command = inputField.value.toLowerCase().trim();
+                errorOutput.innerHTML = "";
+
+                switch(command) {
+                    case "The Lost Soul":
+                        window.location.href = "LostSoul.html"; 
+                        break;
+                        
+                    case "Shot":
+                        window.location.href = "DeathByFraud.html";
+                        break;
+                        
+                    case "MCSnow":
+                        window.location.href = "Nimdok.html";
+                        break;
+                        
+                    case "Kemilia":
+                        window.location.href = "PortalGuy684.html";
+                        break;
+                        
+                    case "Greyan":
+                        window.location.href = "cant blame u for finding this tho.html";
+                        break;
+                        
+                    default:
+                        window.location.href = "https://youtu.be/CkDfvVgZ-xk";
+                        inputField.value = ""; 
+                        break;
+                }
+            }
+        });
+    </script>
 
 </body>
 </html>
+
