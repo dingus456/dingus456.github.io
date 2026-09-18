@@ -1,8 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
+     <audio autoplay loop controls style="display: block; margin: 20px auto; opacity: 0">
+        <source src="Humming.m4a" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+    <audio autoplay loop controls style="display: block; margin: 20px auto; opacity: 0; Volume: 0.2">
+        <source src="randomrobloxian.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+      <script>
+        document.addEventListener('click', function() {
+            var audio = document.querySelector('audio');
+            if (audio) { audio.play(); }
+        }, { once: true });
+    </script>
 <head>
     <meta charset="UTF-8">
-    <title>Analog Horror Archive</title>
+    <title>Random.</title>
     
     <!-- 1. FIXED: Added the Google Font link for true pixels -->
     <link href="https://googleapis.com" rel="stylesheet">
