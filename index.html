@@ -1,39 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <!-- Links a pixelated screen font directly from Google -->
+    <meta charset="UTF-8">
+    <title>Analog Horror Archive</title>
+    
+    <!-- 1. FIXED: Correct link to load the VT323 pixel font -->
     <link href="https://googleapis.com" rel="stylesheet">
     
     <style>
+        /* 2. FIXED: Applied the SVG filter matrix to the entire page */
+        html {
+            filter: contrast(160%) brightness(90%) url(#pixelate);
+            background-color: #000000;
+        }
+
         body {
             background-color: #000000;
             color: #ffffff;
             font-family: 'VT323', monospace;
-           
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
         }
-        <svg xmlns="http://w3.org" style="display: none;">
-  <filter id="pixelate" x="0%" y="0%" width="100%" height="100%">
-    <feGaussianBlur stdDeviation="2" result="blur" />
-    <feComponentTransfer in="blur" result="brick">
-      <feFuncR type="discrete" tableValues="0 0.2 0.4 0.6 0.8 1" />
-      <feFuncG type="discrete" tableValues="0 0.2 0.4 0.6 0.8 1" />
-      <feFuncB type="discrete" tableValues="0 0.2 0.4 0.6 0.8 1" />
-    </feComponentTransfer>
-  </filter>
-</svg>
+        
+        /* Adds a subtle VHS scanning texture over the pixel grid */
+        html::before {
+            content: " ";
+            display: block;
+            position: fixed;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.3) 50%);
+            background-size: 100% 5px;
+            z-index: 9999;
+            pointer-events: none;
+        }
+
         img, video {
-    image-rendering: pixelated;
-    image-rendering: crisp-edges;
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+        }
+
+        /* Styling for your elements */
+        .main-title {
+            font-size: 100px; 
+            text-align: center;
+            text-transform: uppercase;
+            text-shadow: 2px 2px 0px #ff0000, -2px -2px 0px #0000ff;
+        }
+
+        .hidden-message {
+            color: #171717; 
+            text-align: left; 
+            font-size: 20px; /* Boosted slightly so the tiny pixel grid doesn't swallow it */
+            display: block;
+            padding: 20px;
         }
     </style>
 </head>
+<body>
 
+    <!-- 3. FIXED: Moved SVG element out of CSS and into the structural body context -->
+    <svg xmlns="http://w3.org" style="display: none;">
+        <filter id="pixelate" x="0%" y="0%" width="100%" height="100%">
+            <feGaussianBlur stdDeviation="1.5" result="blur" />
+            <feComponentTransfer in="blur" result="brick">
+                <feFuncR type="discrete" tableValues="0 0.2 0.4 0.6 0.8 1" />
+                <feFuncG type="discrete" tableValues="0 0.2 0.4 0.6 0.8 1" />
+                <feFuncB type="discrete" tableValues="0 0.2 0.4 0.6 0.8 1" />
+            </feComponentTransfer>
+        </filter>
+    </svg>
 
+    <!-- First screen drop -->
+    <div style="height: 100vh;"></div>
 
+    <div>
+        <p class="main-title">IS IT REALLY NEEDED?</p>
+    </div>
 
+    <!-- Long scroll to hide secrets -->
+    <div style="height: 300vh;"></div>
 
-<div style="height: 100vh;"></div>
-<div style="background-color:#000000">
-<p style="font-size: 100px; text-align: center;">IS IT REALLY NEEDED?</p>
-</div>
+    <span class="hidden-message">the mall with no way. the creature with no face. all in there. all nowhere.</span>
 
-<div style="height: 1000vh;"></div>
-<span style="color:#171717; text-align: left; font-size:10px;">the mall with no way. the creature with no face. all in there. all nowhere.</span>
+</body>
+</html>
