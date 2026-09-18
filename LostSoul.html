@@ -11,25 +11,64 @@
 </audio>
 
 <script>
-    const humTrack = document.getElementById('track-hum');
+    const textToType = "Curious and naive, he went to the mall. What was there in time, what was there to see? Something that is dark, something that cannot be seen at first, consumed the poor soul. He lost his vessel. Lost to a prison, that torments since forever.";
+    const targetElement = document.getElementById("typewriter-target");
+    let index = 0;
+
     const robloxianTrack = document.getElementById('track-robloxian');
+    if (robloxianTrack) { robloxianTrack.volume = 0.2; }
 
-    if (robloxianTrack) {
-        robloxianTrack.volume = 0.2; 
-    }
-    if (humTrack) {
-        humTrack.volume = 1.0;
+    const humTrack1 = document.getElementById('track-hum'); 
+    let humTrack2 = null;
+    let gaplessTimer = null;
+
+    function initGaplessHum() {
+        if (!humTrack1) return;
+        
+        humTrack2 = humTrack1.cloneNode(true);
+        humTrack2.id = "track-hum-twin";
+        humTrack1.parentNode.appendChild(humTrack2);
+        
+        humTrack1.loop = false;
+        humTrack2.loop = false;
+        
+        humTrack1.addEventListener('play', () => startLoopTimer(humTrack1, humTrack2));
+        humTrack2.addEventListener('play', () => startLoopTimer(humTrack2, humTrack1));
     }
 
+    function startLoopTimer(currentPlayer, nextPlayer) {
+        if (gaplessTimer) clearTimeout(gaplessTimer);
+        
+        const durationMS = currentPlayer.duration * 1000;
+        
+        if (isNaN(durationMS) || durationMS <= 0) {
+            setTimeout(() => startLoopTimer(currentPlayer, nextPlayer), 100);
+            return;
+        }
+
+        const triggerOverlapTime = durationMS - 150;
+
+        gaplessTimer = setTimeout(() => {
+            nextPlayer.currentTime = 0;
+            nextPlayer.play().catch(err => {});
+        }, triggerOverlapTime);
+    }
+
+    function playKeystrokeSound() {
+        const soundInstance = new Audio('keystroke.mp3'); 
+        soundInstance.volume = 0.4; 
+        soundInstance.preload = "auto"; 
+        soundInstance.play().catch(err => {});
+    }
+
+
+    // User Interaction Click-Bypass Engine
     document.addEventListener('click', function() {
-        if (humTrack && humTrack.paused) { 
-            humTrack.play().catch(err => console.log("Hum track blocked.")); 
-        }
-        if (robloxianTrack && robloxianTrack.paused) { 
-            robloxianTrack.play().catch(err => console.log("Robloxian track blocked.")); 
-        }
+        if (humTrack1 && humTrack1.paused) { humTrack1.play().catch(err => {}); }
+        if (robloxianTrack && robloxianTrack.paused) { robloxianTrack.play().catch(err => {}); }
     }, { once: true });
 </script>
+
 <head>
     <meta charset="UTF-8">
     <title>Random.</title>
@@ -108,7 +147,7 @@
         let index = 0;
 
         function typeWriter() {
-            if (index < textToType.length) {
+            if (index < textToType.length) { playKeystrokeSound(); } {
                 targetElement.innerHTML = textToType.substring(0, index + 1) + '<span class="cursor">&nbsp;</span>';
                 index++;
                 setTimeout(typeWriter, 50); 
