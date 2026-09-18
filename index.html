@@ -4,11 +4,9 @@
     <meta charset="UTF-8">
     <title>Analog Horror Archive</title>
     
-    <!-- 1. FIXED: Correct link to load the VT323 pixel font -->
     <link href="https://googleapis.com" rel="stylesheet">
     
     <style>
-        /* 2. FIXED: Applied the SVG filter matrix to the entire page */
         html {
             filter: contrast(160%) brightness(90%) url(#pixelate);
             background-color: #000000;
@@ -23,7 +21,6 @@
             overflow-x: hidden;
         }
         
-        /* Adds a subtle VHS scanning texture over the pixel grid */
         html::before {
             content: " ";
             display: block;
@@ -40,7 +37,6 @@
             image-rendering: crisp-edges;
         }
 
-        /* Styling for your elements */
         .main-title {
             font-size: 100px; 
             text-align: center;
@@ -51,7 +47,7 @@
         .hidden-message {
             color: #171717; 
             text-align: left; 
-            font-size: 20px; /* Boosted slightly so the tiny pixel grid doesn't swallow it */
+            font-size: 20px; 
             display: block;
             padding: 20px;
         }
@@ -59,7 +55,6 @@
 </head>
 <body>
 
-    <!-- 3. FIXED: Moved SVG element out of CSS and into the structural body context -->
     <svg xmlns="http://w3.org" style="display: none;">
         <filter id="pixelate" x="0%" y="0%" width="100%" height="100%">
             <feGaussianBlur stdDeviation="1.5" result="blur" />
@@ -71,14 +66,12 @@
         </filter>
     </svg>
 
-    <!-- First screen drop -->
     <div style="height: 100vh;"></div>
 
     <div>
         <p class="main-title">IS IT REALLY NEEDED?</p>
     </div>
 
-    <!-- Long scroll to hide secrets -->
     <div style="height: 300vh;"></div>
 
     <span class="hidden-message">the mall with no way. the creature with no face. all in there. all nowhere.</span>
