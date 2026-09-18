@@ -1,2 +1,2 @@
 # does-it-matter.github.io
-<center><p style="font-size:100px">IS IT REALLY NEEDED?</p></center>
+<p style="font-size: 100px; text-align: center;">IS IT REALLY NEEDED?</p>
