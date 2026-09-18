@@ -130,38 +130,41 @@
             soundInstance.play().catch(err => {});
         }
 
-           function typeWriter() {
-        if (index < textToType.length) { 
-            if (textToType[index] !== " ") {
-                playKeystrokeSound(); 
-            }
-            targetElement.innerHTML = textToType.substring(0, index + 1) + '<span class="cursor">&nbsp;</span>';
-            index++;
-            setTimeout(typeWriter, 50); 
-                if (textToType.substring(index, index + 5) === "[RED]") {
-                    currentTextColor = "#ff0000"; 
-                    index += 5; 
-                    typeWriter(); 
-                    return;
-                }
-                
-                if (textToType.substring(index, index + 7) === "[WHITE]") {
-                    currentTextColor = "#ffffff"; 
-                    index += 7; 
-                    typeWriter();
-                    return;
-                }
+      let currentTextColor = "#ffffff"; 
+let printedHtmlContent = ""; 
 
-                if (textToType[index] !== " ") {
-                    playKeystrokeSound(); 
-                }
-                
-                printedHtmlContent += `<span style="color: ${currentTextColor};">${textToType[index]}</span>`;
-                targetElement.innerHTML = printedHtmlContent + '<span class="cursor">&nbsp;</span>';
-                
-                index++;
-                setTimeout(typeWriter, 50); 
-            }
+function typeWriter() {
+    if (index < textToType.length) { 
+        
+        if (textToType.substring(index, index + 5) === "[RED]") {
+            currentTextColor = "#ff0000"; 
+            index += 5; 
+            typeWriter(); 
+            return;
+        }
+        
+
+        if (textToType.substring(index, index + 7) === "[WHITE]") {
+            currentTextColor = "#ffffff";
+            index += 7;
+            typeWriter(); 
+            return;
+        }
+
+   
+        if (textToType.charAt(index) !== " ") {
+            playKeystrokeSound(); 
+        }
+        
+
+        printedHtmlContent += `<span style="color: ${currentTextColor};">${textToType.charAt(index)}</span>`;
+        targetElement.innerHTML = printedHtmlContent + '<span class="cursor">&nbsp;</span>';
+        
+        index++; 
+        setTimeout(typeWriter, 50); 
+    }
+}
+
         }
 
         window.onload = function() {
