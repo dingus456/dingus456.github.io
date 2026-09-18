@@ -123,7 +123,7 @@
 
     function playKeystrokeSound() {
         const soundInstance = new Audio('keystroke.mp3'); 
-        soundInstance.volume = 0; 
+        soundInstance.volume = 0;
         soundInstance.preload = "auto"; 
         soundInstance.play().catch(err => {
             console.log("Keystroke audio clip execution paused by core system profile.");
