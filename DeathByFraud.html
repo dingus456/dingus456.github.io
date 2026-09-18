@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Random.</title>
+    <title>Andrew.</title>
     
     
     <style>
@@ -138,6 +138,20 @@
             targetElement.innerHTML = textToType.substring(0, index + 1) + '<span class="cursor">&nbsp;</span>';
             index++;
             setTimeout(typeWriter, 50); 
+                if (textToType.substring(index, index + 5) === "[RED]") {
+                    currentTextColor = "#ff0000"; 
+                    index += 5;
+                    typeWriter(); 
+                    return;
+                }
+                
+                // Check if loop hits the [WHITE] flag marker
+                if (textToType.substring(index, index + 7) === "[WHITE]") {
+                    currentTextColor = "#ffffff";
+                    index += 7; 
+                    typeWriter();
+                    return;
+                }
         }
     }
 
