@@ -3,7 +3,8 @@
        <meta charset="UTF-8">
     <title>heyo. ur cool. byeeeeeeeeeeeeeeeeee</title>
     <style>
-       html {
+      html {
+    
             filter: contrast(160%) brightness(90%) url(#pixelate);
             background-color: #000000;
         }
@@ -16,24 +17,31 @@
             overflow-x: hidden;
         }
       .wrap {
-        position: fixed;
-        top: 0;
-        left: 0;
-         width: 100vw;
-        height: 100vh;
-      
-
-      background-image: url('seal the deal.jpg'); 
-    
-      background-size: cover;     
-      background-position: center;  
-      background-repeat: no-repeat; 
-    
-      z-index: -1; 
-    }
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-image: url('seal the deal.jpg'); 
+            background-size: cover;     
+            background-position: center;  
+            background-repeat: no-repeat; 
+            z-index: -1; 
+        }
       </style>
   </head>
 <body>
+   <svg xmlns="http://w3.org" style="display: none;">
+        <filter id="pixelate" x="0%" y="0%" width="100%" height="100%">
+            <feGaussianBlur stdDeviation="1.5" result="blur" />
+            <feComponentTransfer in="blur" result="brick">
+                <feFuncR type="discrete" tableValues="0 0.2 0.4 0.6 0.8 1" />
+                <feFuncG type="discrete" tableValues="0 0.2 0.4 0.6 0.8 1" />
+                <feFuncB type="discrete" tableValues="0 0.2 0.4 0.6 0.8 1" />
+            </feComponentTransfer>
+        </filter>
+    </svg>
+  
     <div class="wrap"></div>
   </body>
 </html>
