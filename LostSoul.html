@@ -82,77 +82,87 @@
         <p class="quote-text" id="typewriter-target"></p>
     </div>
     <script>
-        const textToType = "Curious and naive, he went to the mall. What was there in time, what was there to see? Something that is dark, something that cannot be seen at first, consumed the poor soul. He lost his vessel. Lost to a prison, that torments since forever.";
-        const targetElement = document.getElementById("typewriter-target");
-        let index = 0;
+    const textToType = "Curious and naive, he went to the mall. What was there in time, what was there to see? Something that is dark, something that cannot be seen at first, consumed the poor soul. He lost his vessel. Lost to a prison, that torments since forever.";
+    const targetElement = document.getElementById("typewriter-target");
+    let index = 0;
+    let isTypingStarted = false;
 
-        const robloxianTrack = document.getElementById('track-robloxian');
-        if (robloxianTrack) { robloxianTrack.volume = 0.2; }
+    const robloxianTrack = document.getElementById('track-robloxian');
+    const humTrack1 = document.getElementById('track-hum'); 
+    let humTrack2 = null;
+    let gaplessTimer = null;
 
-        const humTrack1 = document.getElementById('track-hum'); 
-        let humTrack2 = null;
-        let gaplessTimer = null;
+    if (robloxianTrack) { robloxianTrack.volume = 0.2; }
 
-        function initGaplessHum() {
-            if (!humTrack1) return;
-            
-            humTrack2 = humTrack1.cloneNode(true);
-            humTrack2.id = "track-hum-twin";
-            humTrack1.parentNode.appendChild(humTrack2);
-            
-            humTrack1.loop = false;
-            humTrack2.loop = false;
-            
-            humTrack1.addEventListener('play', () => startLoopTimer(humTrack1, humTrack2));
-            humTrack2.addEventListener('play', () => startLoopTimer(humTrack2, humTrack1));
+    function initGaplessHum() {
+        if (!humTrack1) return;
+        humTrack2 = humTrack1.cloneNode(true);
+        humTrack2.id = "track-hum-twin";
+        humTrack1.parentNode.appendChild(humTrack2);
+        
+        humTrack1.loop = false;
+        humTrack2.loop = false;
+        
+        humTrack1.addEventListener('play', () => startLoopTimer(humTrack1, humTrack2));
+        humTrack2.addEventListener('play', () => startLoopTimer(humTrack2, humTrack1));
+    }
+
+    function startLoopTimer(currentPlayer, nextPlayer) {
+        if (gaplessTimer) clearTimeout(gaplessTimer);
+        const durationMS = currentPlayer.duration * 1000;
+        if (isNaN(durationMS) || durationMS <= 0) {
+            setTimeout(() => startLoopTimer(currentPlayer, nextPlayer), 100);
+            return;
         }
+        const triggerOverlapTime = durationMS - 150;
+        gaplessTimer = setTimeout(() => {
+            nextPlayer.currentTime = 0;
+            nextPlayer.play().catch(err => {});
+        }, triggerOverlapTime);
+    }
 
-        function startLoopTimer(currentPlayer, nextPlayer) {
-            if (gaplessTimer) clearTimeout(gaplessTimer);
-            
-            const durationMS = currentPlayer.duration * 1000;
-            
-            if (isNaN(durationMS) || durationMS <= 0) {
-                setTimeout(() => startLoopTimer(currentPlayer, nextPlayer), 100);
-                return;
+    function playKeystrokeSound() {
+        const soundInstance = new Audio('keystroke.mp3'); 
+        soundInstance.volume = 0.4; 
+        soundInstance.preload = "auto"; 
+        soundInstance.play().catch(err => {
+            console.log("Keystroke audio clip execution paused by core system profile.");
+        });
+    }
+
+    function typeWriter() {
+        if (index < textToType.length) { 
+            if (textToType[index] !== " ") {
+                playKeystrokeSound(); 
             }
-
-            const triggerOverlapTime = durationMS - 150;
-
-            gaplessTimer = setTimeout(() => {
-                nextPlayer.currentTime = 0;
-                nextPlayer.play().catch(err => {});
-            }, triggerOverlapTime);
+            targetElement.innerHTML = textToType.substring(0, index + 1) + '<span class="cursor">&nbsp;</span>';
+            index++;
+            setTimeout(typeWriter, 50); 
         }
+    }
 
-        function playKeystrokeSound() {
-            const soundInstance = new Audio('keystroke.mp3'); 
-            soundInstance.volume = 0.4; 
-            soundInstance.preload = "auto"; 
-            soundInstance.play().catch(err => {});
+    window.onload = function() {
+        initGaplessHum();
+    };
+
+    function unlockWebAudioEngine() {
+        if (humTrack1 && humTrack1.paused) { 
+            humTrack1.play().catch(err => console.log("Hum track unlock pending.")); 
         }
-
-        function typeWriter() {
-            if (index < textToType.length) { 
-                if (textToType[index] !== " ") {
-                    playKeystrokeSound(); 
-                }
-                targetElement.innerHTML = textToType.substring(0, index + 1) + '<span class="cursor">&nbsp;</span>';
-                index++;
-                setTimeout(typeWriter, 50); 
-            }
+        if (robloxianTrack && robloxianTrack.paused) { 
+            robloxianTrack.play().catch(err => console.log("Robloxian track unlock pending.")); 
         }
-
-        window.onload = function() {
+        
+        if (!isTypingStarted) {
+            isTypingStarted = true;
             typeWriter();
-            initGaplessHum();
-        };
+        }
+    }
 
-        document.addEventListener('click', function() {
-            if (humTrack1 && humTrack1.paused) { humTrack1.play().catch(err => {}); }
-            if (robloxianTrack && robloxianTrack.paused) { robloxianTrack.play().catch(err => {}); }
-        }, { once: true });
-    </script>
+    document.addEventListener('click', unlockWebAudioEngine, { once: true });
+    document.addEventListener('keydown', unlockWebAudioEngine, { once: true });
+    document.addEventListener('touchstart', unlockWebAudioEngine, { once: true });
+</script>
 
 </body>
 </html>
