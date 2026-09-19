@@ -49,13 +49,38 @@
             background-repeat: no-repeat; 
             z-index: -1; 
         }
+        .aero-frame {
+    background: rgba(255, 255, 255, 0.2); 
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    
+    border-top: 1px solid rgba(255, 255, 255, 0.6);
+    border-left: 1px solid rgba(255, 255, 255, 0.6);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    border-right: 1px solid rgba(255, 255, 255, 0.2);
+    
+    border-radius: 12px;
+    box-shadow: 0 8px 32px 0 rgba(0, 150, 255, 0.25);
+    
+    padding: 20px;
+    margin: 20px auto;
+    max-width: 500px;
+    color: #ffffff;
+}
+
+.aero-frame h3 {
+    margin-top: 0;
+    color: #bbf2ff; 
+    text-shadow: 0 0 8px rgba(0, 180, 255, 0.6);
+}
+
     </style>
 </head>
   <body>
     <div class = "background"></div>
     <div style="height:20vh;"></div>
     <div class = "title-bar"><b>WELCOME TO BLISS! YOUR VERY OWN PERSONAL PARADISE.</b></div>
-    <div class="window-container">this page was made specifically for you to rest from all the chaos in this world. relax.. think of something we never achieved. the future that they promised...</div>
+    <div class="aero-frame">this page was made specifically for you to rest from all the chaos in this world. relax.. think of something we never achieved. the future that they promised...</div>
       <audio autoplay loop controls style="display: block; margin: 20px auto; opacity: 0">
         <source src="9jackjack8-aqua-frutiger-aero-chillwave-532669.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
