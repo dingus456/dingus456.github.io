@@ -55,6 +55,14 @@
             margin-bottom: 60px;
             text-transform: uppercase;
         }
+        .disclaimer {
+            color: #ffffff; 
+            text-align: center; 
+            font-size: 24px; 
+            display: block;
+            margin-bottom: 60px;
+            text-transform: uppercase;
+        }
 
    
         .terminal-box {
@@ -126,7 +134,9 @@
         <span class="hidden-message" id="scare-trigger">
             Too cowardly, yet all knowingly. Wished to not been seen. Wished to never enjoy.
         </span>
-
+        <span class="disclaimer">
+            please type your input in lowercase. otherwise, it won't work.
+        </span>
         <div class="terminal-box">
             <input type="text" id="command-line" class="terminal-input" placeholder="..." autocomplete="off">
             <p id="error-output" class="error-message"></p>
@@ -237,6 +247,29 @@
                     case "banzai":
                     case "mark":
                         window.location.href = "Milord.html";
+                        break;
+                    case "theo":
+                    case "theodore foss":
+                    case "replicator":
+                        window.location.href = "Facade.html";
+                        break;
+                    case "corrosion":
+                    case "censor":
+                    case "unknown":
+                    case "олег":
+                        window.location.href = "Corroding.html";
+                        break;
+                    case "substance":
+                        window.location.href = "Substance.html";
+                        break;
+                    case "test_003":
+                    case "003":
+                    case "failure":
+                    case "the machine":
+                        window.location.href = "test-failed.html";
+                        break;
+                    case "arsenty":
+                        window.location.href = "Bliss.html";
                         break;
                     default:
                         window.location.href = "https://youtu.be/CkDfvVgZ-xk";
