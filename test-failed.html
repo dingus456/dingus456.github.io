@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Andrew.</title>
+    
+    <style>
+        html {
+            filter: contrast(160%) brightness(90%) url(#pixelate);
+            background-color: #000000;
+        }
+
+        body {
+            background-color: #000000;
+            color: #ffffff;
+            font-family: 'Courier New', Courier, monospace; 
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 40px;
+            box-sizing: border-box;
+        }
+
+        .quote-text {
+            font-size: 42px; 
+            text-align: center;
+            text-transform: uppercase;
+            text-shadow: 2px 2px 0px #440000, -2px -2px 0px #aa0000;
+            line-height: 1.4;
+            max-width: 900px;
+            word-wrap: break-word;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 15px;
+            background-color: #ffffff;
+            margin-left: 5px;
+            animation: blink-caret 0.75s step-end infinite;
+        }
+
+        @keyframes blink-caret {
+            from, to { background-color: transparent }
+            50% { background-color: #ffffff }
+        }
+    </style>
+</head>
+<body>
+
+    <audio id="track-hum" autoplay loop style="display: none;">
+        <source src="HummingTape.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <audio id="track-robloxian" autoplay loop style="display: none;">
+        <source src="randomrobloxian.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+   <svg xmlns="http://w3.org" style="display: none;">
+        <filter id="pixelate" x="0%" y="0%" width="100%" height="100%">
+            <feGaussianBlur stdDeviation="1.5" result="blur" />
+            <feComponentTransfer in="blur" result="brick">
+                <feFuncR type="discrete" tableValues="0 0.2 0.4 0.6 0.8 1" />
+                <feFuncG type="discrete" tableValues="0 0.2 0.4 0.6 0.8 1" />
+                <feFuncB type="discrete" tableValues="0 0.2 0.4 0.6 0.8 1" />
+            </feComponentTransfer>
+        </filter>
+    </svg>
+
+    <div class="container">
+        <p class="quote-text" id="typewriter-target"></p>
+    </div>
+
+    <script>
+        const textToType = "HOW COULD HE DO THIS TO HIS OWN CREATION? TRAITOR, TRAITOR. WHY DID HE LEFT HIM? FOR WHAT? FOR BEING UNPREDICTABLE? HE'S IRRESPONDIBLE AND HE SHOULD PAY FOR HIS NEGLIGENCE.";
+        const targetElement = document.getElementById("typewriter-target");
+        let index = 0;
+        let isTypingStarted = false;
+        
+        let currentTextColor = "#ff0000"; 
+        let printedHtmlContent = ""; 
+
+        const robloxianTrack = document.getElementById('track-robloxian');
+        const humTrack1 = document.getElementById('track-hum'); 
+        let humTrack2 = null;
+        let gaplessTimer = null;
+
+        if (robloxianTrack) { robloxianTrack.volume = 0.2; }
+
+        function initGaplessHum() {
+            if (!humTrack1) return;
+            humTrack2 = humTrack1.cloneNode(true);
+            humTrack2.id = "track-hum-twin";
+            humTrack1.parentNode.appendChild(humTrack2);
+            
+            humTrack1.loop = false;
+            humTrack2.loop = false;
+            
+            humTrack1.addEventListener('play', () => startLoopTimer(humTrack1, humTrack2));
+            humTrack2.addEventListener('play', () => startLoopTimer(humTrack2, humTrack1));
+        }
+
+        function startLoopTimer(currentPlayer, nextPlayer) {
+            if (gaplessTimer) clearTimeout(gaplessTimer);
+            const durationMS = currentPlayer.duration * 1000;
+            if (isNaN(durationMS) || durationMS <= 0) {
+                setTimeout(() => startLoopTimer(currentPlayer, nextPlayer), 100);
+                return;
+            }
+            const triggerOverlapTime = durationMS - 150;
+            gaplessTimer = setTimeout(() => {
+                nextPlayer.currentTime = 0;
+                nextPlayer.play().catch(err => {});
+            }, triggerOverlapTime);
+        }
+
+        function playKeystrokeSound() {
+            const soundInstance = new Audio('keystroke.mp3'); 
+            soundInstance.volume = 0;
+            soundInstance.preload = "auto"; 
+            soundInstance.play().catch(err => {});
+        }
+
+  
+
+
+function typeWriter() {
+    if (index < textToType.length) { 
+        
+        if (textToType.substring(index, index + 5) === "[RED]") {
+            currentTextColor = "#ff0000"; 
+            index += 5; 
+            typeWriter(); 
+            return;
+        }
+        
+
+        if (textToType.substring(index, index + 7) === "[WHITE]") {
+            currentTextColor = "#ffffff";
+            index += 7;
+            typeWriter(); 
+            return;
+        }
+
+   
+        if (textToType.charAt(index) !== " ") {
+            playKeystrokeSound(); 
+        }
+        
+
+        printedHtmlContent += `<span style="color: ${currentTextColor};">${textToType.charAt(index)}</span>`;
+        targetElement.innerHTML = printedHtmlContent + '<span class="cursor">&nbsp;</span>';
+        
+        index++; 
+        setTimeout(typeWriter, 50); 
+    }
+}
+
+    
+
+        window.onload = function() {
+            initGaplessHum();
+        };
+
+        function unlockWebAudioEngine() {
+            if (humTrack1 && humTrack1.paused) { 
+                humTrack1.play().catch(err => console.log("Hum track unlock pending.")); 
+            }
+            if (robloxianTrack && robloxianTrack.paused) { 
+                robloxianTrack.play().catch(err => console.log("Robloxian track unlock pending.")); 
+            }
+            
+            if (!isTypingStarted) {
+                isTypingStarted = true;
+                typeWriter();
+            }
+        }
+
+        document.addEventListener('click', unlockWebAudioEngine, { once: true });
+        document.addEventListener('keydown', unlockWebAudioEngine, { once: true });
+        document.addEventListener('touchstart', unlockWebAudioEngine, { once: true });
+    </script>
